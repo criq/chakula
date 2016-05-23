@@ -48,7 +48,6 @@ class Category {
 				}));
 
 			} catch (\Exception $e) {
-				var_dump($e); die;
 				/* Nevermind. */
 			}
 
