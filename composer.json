@@ -10,7 +10,7 @@
 	],
 	"require": {
 		"jabli/katu": "dev-master"
-	}
+	},
 	"autoload": {
 		"psr-4": {
 			"Chakula\\": "src/"
