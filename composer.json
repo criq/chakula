@@ -2,9 +2,18 @@
 	"name": "jabli/chakula",
 	"description": "cs eshop scraper",
 	"type": "library",
+	"repositories": [
+		{
+			"url": "https://github.com/criq/katu.git",
+			"type": "git"
+		}
+	],
+	"require": {
+		"jabli/katu": "dev-master"
+	}
 	"autoload": {
 		"psr-4": {
-			"Fono\\": "src/"
+			"Chakula\\": "src/"
 		}
 	}
 }
