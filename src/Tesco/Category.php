@@ -14,7 +14,7 @@ class Category {
 	}
 
 	public function getUrl() {
-		return \Chakula\Tesco::BASE_URL . 'categories/' . $this->id;
+		return \Chakula\Tesco::BASE_URL . '/groceries/cs-CZ/categories/' . $this->id;
 	}
 
 	public function getPages() {
