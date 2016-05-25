@@ -4,6 +4,10 @@ namespace Chakula\Tesco;
 
 class Product {
 
+	public function __construct($id = null) {
+		$this->id = $id;
+	}
+
 	static function createFromWebsite($dom) {
 		$object = new static;
 		preg_match('#/groceries/cs-CZ/products/([0-9]+)#', $dom->filter('.product-tile--title a')->attr('href'), $match);
@@ -15,16 +19,59 @@ class Product {
 	}
 
 	public function getUrl() {
-		return \Chakula\Tesco::BASE_URL . $this->uri;
+		if (isset($this->uri) && $this->uri) {
+			return \Chakula\Tesco::BASE_URL . $this->uri;
+		} else {
+			return \Chakula\Tesco::BASE_URL . '/groceries/cs-CZ/products/' . $this->id;
+		}
+	}
+
+	public function getSrc() {
+		return \Katu\Utils\Cache::getUrl($this->getUrl(), 86400 * 7);
+	}
+
+	public function getDOM() {
+		return \Katu\Utils\DOM::crawlHtml($this->getSrc());
+	}
+
+	public function getName() {
+		return trim($this->getDOM()->filter('h1.product-title')->text());
+	}
+
+	public function getPrice() {
+		$dom = $this->getDOM();
+
+		$productPrice = new ProductPrice;
+
+		$domPricePerUnit = $dom->filter('.price-per-sellable-unit');
+		if ($domPricePerUnit->count()) {
+			$productPrice->price = new Price($domPricePerUnit->filter('.value')->text(), $domPricePerUnit->filter('.currency')->text());
+			$productPrice->regular = $productPrice->price;
+		}
+
+		$domPromoPricePerUnit = $dom->filter('.product-promotion .offer-text');
+		if ($domPromoPricePerUnit->count() && preg_match('#běžná cena ([0-9,]+) nyní ([0-9,]+)#u', $domPromoPricePerUnit->text(), $match)) {
+			$productPrice->regular = new Price($match[1]);
+			$productPrice->promo = new Price($match[2]);
+		}
+
+		$domPricePerQuantity = $dom->filter('.price-per-quantity-weight');
+		if ($domPricePerQuantity->count()) {
+			$productPrice->pricePerQuantity = new PricePerQuantity(new Price($domPricePerQuantity->filter('.value')->text(), $domPricePerQuantity->filter('.currency')->text()), new Quantity(1, $domPricePerQuantity->filter('.weight')->text()));
+		} else {
+			var_dump("A"); die;
+		}
+
+		return $productPrice;
 	}
 
 	public function getInfo($title = null) {
-		return \Katu\Utils\Cache::getFromMemory(['chakula', 'tesco', 'product', 'info', $this->id], function($title) {
+		return \Katu\Utils\Cache::get(['chakula', 'tesco', 'product', 'info', $this->id], function($title) {
 
-			$src = \Katu\Utils\Cache::getUrl($this->getUrl(), 86400 * 7);
+			$src = $this->getSrc();
 			$dom = \Katu\Utils\DOM::crawlHtml($src);
 
-			$info = $dom->filter('.brand-bank--brand-info .groupItem')->each(function($e) {
+			$info = $dom->filter('.brand-bank--brand-info .groupItem, .brand-bank--brand-info .using-product-info')->each(function($e) {
 				return ProductInfo::createFromWebsite($e);
 			});
 

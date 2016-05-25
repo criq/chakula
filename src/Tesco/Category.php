@@ -43,7 +43,7 @@ class Category {
 				$src = \Katu\Utils\Cache::getUrl($url, 86400);
 				$dom = \Katu\Utils\DOM::crawlHtml($src);
 
-				$products = array_merge($products, $dom->filter('.product-lists .product-list--list-item')->each(function($e) {
+				$products = array_merge($products, $dom->filter('.product-list .product-list--list-item')->each(function($e) {
 					return Product::createFromWebsite($e);
 				}));
 
