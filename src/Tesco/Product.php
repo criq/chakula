@@ -58,8 +58,6 @@ class Product {
 		$domPricePerQuantity = $dom->filter('.price-per-quantity-weight');
 		if ($domPricePerQuantity->count()) {
 			$productPrice->pricePerQuantity = new PricePerQuantity(new Price($domPricePerQuantity->filter('.value')->text(), $domPricePerQuantity->filter('.currency')->text()), new Quantity(1, $domPricePerQuantity->filter('.weight')->text()));
-		} else {
-			var_dump("A"); die;
 		}
 
 		return $productPrice;
