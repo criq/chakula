@@ -8,7 +8,7 @@ class Category {
 		$object = new static;
 		$object->id = $res->catId;
 		$object->uri = $res->url;
-		$object->name = $res->name;
+		$object->name = preg_replace('#\s+#', ' ', $res->name);
 
 		return $object;
 	}
