@@ -8,12 +8,12 @@ class Product {
 		$this->id = $id;
 	}
 
-	static function createFromWebsite($dom) {
+	static function createFromDom($dom) {
 		$object = new static;
-		preg_match('#/groceries/cs-CZ/products/([0-9]+)#', $dom->filter('.product-tile--title a')->attr('href'), $match);
+		preg_match('#/groceries/cs-CZ/products/([0-9]+)#', $dom->filter('a.product-tile--title')->attr('href'), $match);
 		$object->id = $match[1];
-		$object->uri = $dom->filter('.product-tile--title a')->attr('href');
-		$object->name = $dom->filter('.product-tile--title a')->text();
+		$object->uri = $dom->filter('a.product-tile--title')->attr('href');
+		$object->name = $dom->filter('a.product-tile--title')->text();
 
 		return $object;
 	}

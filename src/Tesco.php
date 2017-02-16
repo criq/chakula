@@ -11,9 +11,20 @@ class Tesco {
 		$src = \Katu\Utils\Cache::getUrl($url . '/groceries/cs-CZ/', 86400);
 		$dom = \Katu\Utils\DOM::crawlHtml($src);
 
-		$superDepartments = $dom->filter('.menu-superdepartment .navigation-menu--link')->each(function($i) {
-			$superDepartments[] = Tesco\SuperDepartment::createFromWebsite($i);
-		});
+		$superDepartments = [];
+
+		foreach (json_decode($dom->filter('html')->attr('data-redux-state'))[10][2] as $superDepartmentArray) {
+			$superDepartment = new Tesco\SuperDepartment($superDepartmentArray[2], $superDepartmentArray[4]);
+			foreach (array_slice($superDepartmentArray[10], 1) as $departmentArray) {
+				$department = new Tesco\Department($departmentArray[2], $departmentArray[4]);
+				foreach (array_slice($departmentArray[10], 1) as $categoryArray) {
+					$category = new Tesco\Category($categoryArray[2], $categoryArray[4]);
+					$department->categories[] = $category;
+				}
+				$superDepartment->departments[] = $department;
+			}
+			$superDepartments[] = $superDepartment;
+		}
 
 		return $superDepartments;
 	}

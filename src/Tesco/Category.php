@@ -4,13 +4,9 @@ namespace Chakula\Tesco;
 
 class Category {
 
-	static function createFromWebsite($res) {
-		$object = new static;
-		$object->id = $res->catId;
-		$object->uri = $res->url;
-		$object->name = preg_replace('#\s+#', ' ', $res->name);
-
-		return $object;
+	public function __construct($id, $name) {
+		$this->id = $id;
+		$this->name = $name;
 	}
 
 	public function getUrl() {
@@ -44,7 +40,7 @@ class Category {
 				$dom = \Katu\Utils\DOM::crawlHtml($src);
 
 				$products = array_merge($products, $dom->filter('.product-list .product-list--list-item')->each(function($e) {
-					return Product::createFromWebsite($e);
+					return Product::createFromDom($e);
 				}));
 
 			} catch (\Exception $e) {
