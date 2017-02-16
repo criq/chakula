@@ -4,10 +4,10 @@ namespace Chakula\Tesco;
 
 class SuperDepartment {
 
-	static function createFromWebsite($res) {
+	static function createFromWebsite($dom) {
 		$object = new static;
-		$object->uri = $res->url;
-		$object->name = preg_replace('#\s+#', ' ', $res->name);
+		$object->uri = $dom->attr('href');
+		$object->name = $dom->text();
 		$object->departments = [];
 		foreach ($res->items as $i) {
 			$object->departments[] = Department::createFromWebsite($i);
