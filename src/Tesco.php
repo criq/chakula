@@ -13,7 +13,9 @@ class Tesco {
 
 		$superDepartments = [];
 
-		foreach (json_decode($dom->filter('html')->attr('data-redux-state'))[10][2] as $superDepartmentArray) {
+		$array = json_decode($dom->filter('html')->attr('data-redux-state'));
+
+		foreach (json_decode($dom->filter('html')->attr('data-redux-state'))[array_search('taxonomy', $array) + 1][2] as $superDepartmentArray) {
 			$superDepartment = new Tesco\SuperDepartment($superDepartmentArray[2], $superDepartmentArray[4]);
 			foreach (array_slice($superDepartmentArray[10], 1) as $departmentArray) {
 				$department = new Tesco\Department($departmentArray[2], $departmentArray[4]);
