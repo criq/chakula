@@ -8,6 +8,14 @@ class Product {
 		$this->id = $id;
 	}
 
+	public function isAvailable() {
+		try {
+			return (bool) $this->getSrc();
+		} catch (\Katu\Exceptions\ErrorException $e) {
+			return false;
+		}
+	}
+
 	static function createFromDom($dom) {
 		$object = new static;
 		preg_match('#/groceries/cs-CZ/products/([0-9]+)#', $dom->filter('a.product-tile--title')->attr('href'), $match);
