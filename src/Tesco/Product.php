@@ -96,4 +96,23 @@ class Product {
 		}, 86400 * 7, $title);
 	}
 
+	public function getTescovinyUrl() {
+		return 'http://tescoviny.cz/product/detail/' . $this->id;
+	}
+
+	public function getEan() {
+		try {
+
+			$src = \Katu\Utils\Cache::getUrl($this->getTescovinyUrl(), 86400 * 7);
+			if (preg_match('/(?<ean>[0-9]+)\s*\(EAN\)/', $src, $match)) {
+				return $match['ean'];
+			}
+
+			throw new \Exception;
+
+		} catch (\Exception $e) {
+			return false;
+		}
+	}
+
 }
