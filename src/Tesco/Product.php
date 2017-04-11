@@ -103,15 +103,28 @@ class Product {
 	public function getEan() {
 		try {
 
-			$src = \Katu\Utils\Cache::getUrl($this->getTescovinyUrl(), 86400 * 7);
-			if (preg_match('/(?<ean>[0-9]+)\s*\(EAN\)/', $src, $match)) {
-				return $match['ean'];
+			$array = \Katu\Utils\JSON::decodeAsArray($this->getDOM()->filter('script[type="application/ld+json"]')->html());
+			if ($array[2]['gs1:gtin']) {
+				return $array[2]['gs1:gtin'];
 			}
 
 			throw new \Exception;
 
 		} catch (\Exception $e) {
-			return false;
+
+			try {
+
+				$src = \Katu\Utils\Cache::getUrl($this->getTescovinyUrl(), 86400 * 7);
+				if (preg_match('/(?<ean>[0-9]+)\s*\(EAN\)/', $src, $match)) {
+					return $match['ean'];
+				}
+
+				throw new \Exception;
+
+			} catch (\Exception $e) {
+				return false;
+			}
+
 		}
 	}
 
