@@ -4,13 +4,13 @@ namespace Chakula\Tesco;
 
 class Category {
 
-	public function __construct($id, $name) {
-		$this->id = $id;
+	public function __construct($uri, $name) {
+		$this->uri = $uri;
 		$this->name = $name;
 	}
 
 	public function getUrl() {
-		return \Chakula\Tesco::BASE_URL . '/groceries/cs-CZ/categories/' . $this->id;
+		return \Chakula\Tesco::BASE_URL . '/groceries/cs-CZ/shop' . $this->uri;
 	}
 
 	public function getPages() {
@@ -19,7 +19,7 @@ class Category {
 			$src = \Katu\Utils\Cache::getUrl($this->getUrl(), 86400);
 			$dom = \Katu\Utils\DOM::crawlHtml($src);
 
-			preg_match('#([0-9]+) položek$#', $dom->filter('.results-count')->text(), $match);
+			preg_match('#([0-9]+) položek$#', $dom->filter('.pagination--results-count')->text(), $match);
 			return (int) ceil($match[1] / 24);
 
 		} catch (\Exception $e) {
@@ -44,7 +44,7 @@ class Category {
 				}));
 
 			} catch (\Exception $e) {
-				/* Nevermind. */
+				// Nevermind.
 			}
 
 		}

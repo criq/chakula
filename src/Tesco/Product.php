@@ -34,8 +34,8 @@ class Product {
 		}
 	}
 
-	public function getSrc() {
-		return \Katu\Utils\Cache::getUrl($this->getUrl(), 86400 * 7);
+	public function getSrc($timeout = 2419200) {
+		return \Katu\Utils\Cache::getUrl($this->getUrl(), $timeout);
 	}
 
 	public function getDOM() {

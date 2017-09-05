@@ -6,8 +6,8 @@ class Department {
 
 	public $categories = [];
 
-	public function __construct($id, $name) {
-		$this->id = $id;
+	public function __construct($uri, $name) {
+		$this->uri = $uri;
 		$this->name = $name;
 	}
 
