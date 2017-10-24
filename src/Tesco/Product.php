@@ -4,6 +4,8 @@ namespace Chakula\Tesco;
 
 class Product {
 
+	const TIMEOUT = 2419200;
+
 	public function __construct($id = null) {
 		$this->id = $id;
 	}
@@ -34,20 +36,24 @@ class Product {
 		}
 	}
 
-	public function getSrc($timeout = 2419200) {
+	public function getSrc($timeout = null) {
+		if (is_null($timeout)) {
+			$timeout = static::TIMEOUT;
+		}
+
 		return \Katu\Utils\Cache::getUrl($this->getUrl(), $timeout);
 	}
 
-	public function getDOM() {
-		return \Katu\Utils\DOM::crawlHtml($this->getSrc());
+	public function getDOM($timeout = null) {
+		return \Katu\Utils\DOM::crawlHtml($this->getSrc($timeout));
 	}
 
 	public function getName() {
 		return trim($this->getDOM()->filter('h1.product-title')->text());
 	}
 
-	public function getPrice() {
-		$dom = $this->getDOM();
+	public function getPrice($timeout = null) {
+		$dom = $this->getDOM($timeout);
 
 		$productPrice = new ProductPrice;
 
@@ -93,7 +99,7 @@ class Product {
 
 			return $info;
 
-		}, 86400 * 7, $title);
+		}, static::TIMEOUT, $title);
 	}
 
 	public function getTescovinyUrl() {
@@ -114,7 +120,7 @@ class Product {
 
 			try {
 
-				$src = \Katu\Utils\Cache::getUrl($this->getTescovinyUrl(), 86400 * 7);
+				$src = \Katu\Utils\Cache::getUrl($this->getTescovinyUrl(), static::TIMEOUT);
 				if (preg_match('/(?<ean>[0-9]+)\s*\(EAN\)/', $src, $match)) {
 					return $match['ean'];
 				}
