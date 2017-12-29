@@ -49,7 +49,7 @@ class Product {
 	}
 
 	public function getName() {
-		return trim($this->getDOM()->filter('h1.product-title')->text());
+		return trim($this->getDOM()->filter('h1')->text());
 	}
 
 	public function getPrice($timeout = null) {
