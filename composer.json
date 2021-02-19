@@ -9,7 +9,7 @@
 		}
 	],
 	"require": {
-		"jabli/katu": "dev-master"
+		"jabli/katu": "v2.x-dev"
 	},
 	"autoload": {
 		"psr-4": {
