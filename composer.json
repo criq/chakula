@@ -8,7 +8,10 @@
 			"type": "git"
 		}
 	],
-	"require": {
+	"require" : {
+		"php": ">=7.4"
+	},
+	"require-dev": {
 		"jabli/katu": "v2.x-dev"
 	},
 	"autoload": {
